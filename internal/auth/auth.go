@@ -8,11 +8,13 @@ import (
 	"net/http"
 	"os"
 
+	"go-tg-playlist-discover/internal/config"
+
 	"github.com/zmb3/spotify"
 	"golang.org/x/oauth2"
 )
 
-var redirectURI = "http://localhost:8080/callback"
+var redirectURI = config.Get(config.Host) + ":" + config.Get(config.Port) + "/callback"
 var clientChannel = make(chan *spotify.Client, 1)
 var authenticator = spotify.NewAuthenticator(
 	redirectURI,
@@ -22,17 +24,14 @@ var authenticator = spotify.NewAuthenticator(
 )
 var client *spotify.Client
 var user *spotify.PrivateUser
-var state = "SOME_COOL_STATE"
-
-const (
-	credentialsFilePath = "./creds.json"
-)
+var state = config.Get(config.State)
+var credentialsFilePath = config.Get(config.CredentialsPath)
 
 // GetClient - returns spotify client
 func GetClient() *spotify.Client {
 	http.HandleFunc("/callback", completeAuth)
 
-	go http.ListenAndServe(":8080", nil)
+	go http.ListenAndServe(":"+config.Get(config.Port), nil)
 	go initClient()
 
 	return <-clientChannel
