@@ -14,7 +14,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-var redirectURI = config.Get(config.Host) + ":" + config.Get(config.Port) + "/callback"
+var redirectURI = config.Get(config.HOST) + "/callback"
 var clientChannel = make(chan *spotify.Client, 1)
 var authenticator = spotify.NewAuthenticator(
 	redirectURI,
@@ -24,14 +24,18 @@ var authenticator = spotify.NewAuthenticator(
 )
 var client *spotify.Client
 var user *spotify.PrivateUser
-var state = config.Get(config.State)
+var state = config.Get(config.STATE)
 var credentialsFilePath = config.Get(config.CredentialsPath)
 
 // GetClient - returns spotify client
 func GetClient() *spotify.Client {
-	http.HandleFunc("/callback", completeAuth)
+	http.HandleFunc("/playlist-discover/callback", completeAuth)
 
-	go http.ListenAndServe(":"+config.Get(config.Port), nil)
+	http.HandleFunc("/playlist-discover/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("PongPong!!!"))
+	})
+
+	go http.ListenAndServe(":"+config.Get(config.PORT), nil)
 	go initClient()
 
 	return <-clientChannel

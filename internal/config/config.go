@@ -22,6 +22,7 @@ var envConfigPath string
 var defaultEnv = "development"
 
 func init() {
+	botAPIKey := os.Getenv("BOT_API_KEY")
 	env := os.Getenv("ENV")
 
 	if env == "" {
@@ -31,7 +32,8 @@ func init() {
 	envConfigPath = "./configs/" + env
 
 	viper.SetConfigType("json")
-	viper.Set(Env, env)
+	viper.Set(ENV, env)
+	viper.Set(BotAPIKey, botAPIKey)
 
 	viper.AddConfigPath(envConfigPath)
 	err := viper.ReadInConfig()

@@ -1,4 +1,5 @@
 bin
+main
 creds.json
 env.sh
 .vscode

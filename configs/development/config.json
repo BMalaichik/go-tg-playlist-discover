@@ -2,5 +2,6 @@
     "host": "http://localhost",
     "port": "8080",
     "auth_cb_state": "SOME_COOL_STATE_XXX",
-    "credentials_path": "./creds.json"
+    "credentials_path": "./creds.json",
+    "check_interval_mins" : 1
 }
