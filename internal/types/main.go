@@ -7,6 +7,7 @@ type PlaylistTrack struct {
 	ID     spotify.ID
 	Artist string `json:"artist"`
 	Name   string `json:"name"`
+	Link   string `json:"uri"`
 }
 
 // PlaylistTracksSummary -

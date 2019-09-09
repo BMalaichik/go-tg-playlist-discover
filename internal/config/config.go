@@ -39,6 +39,6 @@ func init() {
 	err := viper.ReadInConfig()
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Configuration initialization failed", err)
 	}
 }

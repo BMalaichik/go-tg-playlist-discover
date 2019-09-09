@@ -17,7 +17,7 @@ func FormatDiscoveryMessage(summary *types.PlaylistTracksSummary) string {
 	builder.WriteString(fmt.Sprintf("Playlist '%v' summary:\n", summary.Name))
 
 	for i, t := range summary.Tracks {
-		str := fmt.Sprintf("#%v. %v - %v\n", i+1, t.Artist, t.Name)
+		str := fmt.Sprintf("#%v. [%v - %v](%v)\n", i+1, t.Artist, t.Name, t.Link)
 		builder.WriteString(str)
 	}
 

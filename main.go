@@ -78,6 +78,10 @@ func main() {
 	}
 
 	for update := range updates {
+		if update.Message == nil {
+			continue // non-messages are not supported
+		}
+
 		if update.Message.Command() == "start" && !discoveryLaucnhed {
 			chatID = update.Message.Chat.ID
 			go initDiscovery()
@@ -145,10 +149,12 @@ func checkPlaylistData(bot *tgbotapi.BotAPI) {
 			Tracks: toNotify,
 		}
 
-		_, err = bot.Send(tgbotapi.NewMessage(chatID, formatter.FormatDiscoveryMessage(notifySummary)))
+		msgConfig := tgbotapi.NewMessage(chatID, formatter.FormatDiscoveryMessage(notifySummary))
+		msgConfig.ParseMode = "Markdown"
+		_, err = bot.Send(msgConfig)
 
 		if err != nil {
-			fmt.Println("Failed to notify on updates")
+			fmt.Println("Failed to notify on updates", err)
 		}
 
 		for _, v := range notifySummary.Tracks {
@@ -177,11 +183,11 @@ func fetchSongsFromPlaylists(user *spotify.PrivateUser, ids []spotify.ID) []*typ
 		log.Printf("Playlist '%v'\n", playlist.Name)
 
 		for _, track := range playlist.Tracks.Tracks {
-
 			track := &types.PlaylistTrack{
 				ID:     track.Track.ID,
 				Name:   track.Track.Name,
 				Artist: getDisplayArtistName(track),
+				Link:   track.Track.ExternalURLs["spotify"],
 			}
 			summary.Tracks = append(summary.Tracks, track)
 		}
